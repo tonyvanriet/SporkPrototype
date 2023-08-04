@@ -14,23 +14,28 @@ Pretty good start
 
 let's see if we can waste less space in the bottom middle.
 ![](Spork%20DevLog%202023-08-03/CleanShot%202023-08-03%20at%2022.04.08@2x.png)<!-- {"width":739} -->![](Spork%20DevLog%202023-08-03/CleanShot%202023-08-03%20at%2022.04.20@2x.png)<!-- {"width":341} -->
+
 yeah, I like this well enough. let's muck with card hover now
 
 actually let's see what no fan looks like.
 ![](Spork%20DevLog%202023-08-03/CleanShot%202023-08-03%20at%2022.11.38@2x.png)<!-- {"width":738} -->![](Spork%20DevLog%202023-08-03/CleanShot%202023-08-03%20at%2022.11.55@2x.png)<!-- {"width":396} -->
+
 not a fan. too... square.
 only fans
 
 but it does make me wanna try a very slight fan.
 ![](Spork%20DevLog%202023-08-03/CleanShot%202023-08-03%20at%2022.14.53@2x.png)<!-- {"width":739} -->![](Spork%20DevLog%202023-08-03/CleanShot%202023-08-03%20at%2022.15.11@2x.png)<!-- {"width":412} -->
+
 not bad. still want more arc
 
 ![](Spork%20DevLog%202023-08-03/CleanShot%202023-08-03%20at%2022.17.36@2x.png)<!-- {"width":740} -->![](Spork%20DevLog%202023-08-03/CleanShot%202023-08-03%20at%2022.17.50@2x.png)<!-- {"width":416} -->
+
 that's the one
 ... for now
 
 Ended up being a great example of structuring the code to allow quick dynamic feedback. I modified the HandController to spawn 10 cards every frame. Then I was able to click and drag from the labels in the Inspector and see the cards adjust in real time.
 ![](Spork%20DevLog%202023-08-03/CleanShot%202023-08-03%20at%2022.44.21.gif)<!-- {"width":740} -->
+
 Also, this made me feel like I found a great data model for the card positioning. I was able to try out all of these variations quickly with just these 3 variables.
 
 ## Flipping through the cards
@@ -61,9 +66,10 @@ each card needs to handle mouse enter and exit. let's focus on rotation first si
     this.transform.localRotation = rotationInFan;
   }
 ```
-
 holy shit that worked!!
+
 ![](Spork%20DevLog%202023-08-03/CleanShot%202023-08-03%20at%2023.46.21.gif)<!-- {"width":740} -->
+
 ok, I can just copy Quaternions and Vector3s because they're data structures and not reference types. cool cool cool.
 
 now we need to move the card up and bring it to the front which means we need to reference the bottom of the view somehow. to ChatGPT!!!
@@ -126,7 +132,9 @@ so if we're gonna use the collider size, we have to rotate it to level first. se
 ```
 
 there we go
+
 ![](Spork%20DevLog%202023-08-03/CleanShot%202023-08-04%20at%2001.22.11.gif)
+
 ...sorta. the vertical height isn't consistent, and higher above the bottom of the screen than I expected, but pretty good.
 I was ready to go to bed, but now we're so close. just gotta bring the hovered card to the front and that's easy.
 
@@ -137,7 +145,9 @@ and turns out "easy" was an understatement.  just need to subtract a bit from th
       cameraMinY + halfCardHeight,
       transform.position.z - 2);
 ```
+
 ![](Spork%20DevLog%202023-08-03/CleanShot%202023-08-04%20at%2001.28.22.gif)
+
 the `- 2` is cheesy, but good enough for now. I know the cards are all within 1 z of each other because of how the depth is calculated
 ``` cs
       float depth = (float)(numCards - i) / 10;
