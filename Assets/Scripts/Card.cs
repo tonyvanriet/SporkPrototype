@@ -1,26 +1,51 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-  public Vector3 positionInFan;
-  public Quaternion rotationInFan;
+
+  Vector3 positionInFan;
+  Quaternion rotationInFan;
+  float cameraMinY;
+  Vector3 cardSize;
+  Collider2D cardCollider;
+
+  void Start()
+  {
+    Camera mainCamera = Camera.main;
+    float cameraHeight = 2f * mainCamera.orthographicSize;
+    cameraMinY = mainCamera.transform.position.y - cameraHeight / 2f;
+    // TODO get camera info from a shared resource
+    // rather than computing it in every Card
+
+    cardCollider = GetComponent<Collider2D>();
+  }
 
   void OnMouseEnter()
   {
-    // store the current position for later
+    // store the current position and rotation for later
+    positionInFan = this.transform.localPosition;
     rotationInFan = this.transform.localRotation;
-    // oh gawd, this is an OO language. I can't do this, right?
 
     // rotate to level
     this.transform.localRotation = Quaternion.identity;
-    // and move up for full visibility
+
+    // and move above the bottom of the view
+    // this .size has to be *after* the rotate. fragile
+    cardSize = cardCollider.bounds.size;
+    float halfCardHeight = cardSize.y / 2f;
+    transform.position = new Vector3(
+      transform.position.x,
+      cameraMinY + halfCardHeight,
+      transform.position.z - 2);
   }
 
   void OnMouseExit()
   {
     // get back in your fan!!
+    this.transform.localPosition = positionInFan;
     this.transform.localRotation = rotationInFan;
   }
 }
