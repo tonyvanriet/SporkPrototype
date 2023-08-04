@@ -372,9 +372,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardGameObject: {fileID: 4543565225495411114, guid: aa2c04ce27d5248bb8fbf4857cf92fb3, type: 3}
-  fanCenter: {x: 0, y: -12, z: 0}
-  fanRadiusMultiplier: 3
-  fanAngleIncrement: 10
+  fanCenter: {x: 0, y: -27.7, z: 0}
+  fanRadiusMultiplier: 8
+  fanAngleIncrement: 2.97
 --- !u!4 &1489345359
 Transform:
   m_ObjectHideFlags: 0
