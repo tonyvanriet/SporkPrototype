@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+  public Vector3 positionInFan;
+  public Quaternion rotationInFan;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+  void OnMouseEnter()
+  {
+    // store the current position for later
+    rotationInFan = this.transform.localRotation;
+    // oh gawd, this is an OO language. I can't do this, right?
+
+    // rotate to level
+    this.transform.localRotation = Quaternion.identity;
+    // and move up for full visibility
+  }
+
+  void OnMouseExit()
+  {
+    // get back in your fan!!
+    this.transform.localRotation = rotationInFan;
+  }
 }
