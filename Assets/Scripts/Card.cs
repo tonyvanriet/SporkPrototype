@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ public class Card : MonoBehaviour
 {
   public Vector3 positionInFan;
   public Quaternion rotationInFan;
-  public float moveForceMagnitude;
+  public float moveForceScalingFactor;
 
   float cameraMinY;
   Vector3 cardSize;
@@ -30,6 +31,13 @@ public class Card : MonoBehaviour
     moveDestination = destination;
   }
 
+  // stop moving and explicitly set the position to the destination
+  public void CompleteMovement()
+  {
+    isMoving = false;
+    transform.localPosition = moveDestination;
+  }
+
   void Start()
   {
     Camera mainCamera = Camera.main;
@@ -47,20 +55,21 @@ public class Card : MonoBehaviour
   {
     if (isMoving)
     {
-      // push the card with a force toward the destination
-      // invert the force if we're past the halfway point
+      // push the card towards the destination
+      // with a force that's proportional to the distance
       Vector2 currentPosition = this.transform.localPosition;
       Vector2 direction = (moveDestination - currentPosition).normalized;
       float distanceToDestination =
         Vector2.Distance(moveDestination, transform.localPosition);
-      float distanceToOrigin =
-        Vector2.Distance(moveOrigin, transform.localPosition);
-      int forcePolarity = distanceToDestination < distanceToOrigin ? -1 : 1;
-      Vector2 force = direction * forcePolarity * moveForceMagnitude * Time.deltaTime;
+      float forceMagnitude =
+        distanceToDestination * moveForceScalingFactor * Time.deltaTime;
+      Vector2 force = direction * forceMagnitude;
       cardRigidBody.AddForce(force);
 
-      // keep moving until we're close to the destination
-      isMoving = (distanceToDestination > 0.1);
+      // keep moving until we're slowly approaching the dest
+      bool landing = (distanceToDestination < 0.01
+        && cardRigidBody.velocity.magnitude < 0.01);
+      if (landing) CompleteMovement();
     }
   }
 
