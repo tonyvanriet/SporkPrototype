@@ -7,8 +7,6 @@ public class Card : MonoBehaviour
 {
   public Vector3 positionInFan;
   public Quaternion rotationInFan;
-  public bool isMoving = false;
-  public Vector2 moveToPosition;
   public float moveForceMagnitude;
 
   float cameraMinY;
@@ -16,6 +14,21 @@ public class Card : MonoBehaviour
   Collider2D cardCollider;
   Rigidbody2D cardRigidBody;
   SpriteRenderer cardSpriteRenderer;
+
+  // movement
+  bool isMoving = false;
+  Vector2 moveOrigin;
+  Vector2 moveDestination;
+
+  // tell the card to start a movement towards the destination
+  // so far the only thing telling the card to move is itself
+  // but I'm expecting that the change
+  public void StartMovement(Vector2 destination)
+  {
+    isMoving = true;
+    moveOrigin = transform.localPosition;
+    moveDestination = destination;
+  }
 
   void Start()
   {
@@ -34,12 +47,20 @@ public class Card : MonoBehaviour
   {
     if (isMoving)
     {
-      // find the direction to the moveToPosition
+      // push the card with a force toward the destination
+      // invert the force if we're past the halfway point
       Vector2 currentPosition = this.transform.localPosition;
-      Vector2 direction = (moveToPosition - currentPosition).normalized;
-      // push the card
-      Vector2 force = direction * moveForceMagnitude * Time.deltaTime;
+      Vector2 direction = (moveDestination - currentPosition).normalized;
+      float distanceToDestination =
+        Vector2.Distance(moveDestination, transform.localPosition);
+      float distanceToOrigin =
+        Vector2.Distance(moveOrigin, transform.localPosition);
+      int forcePolarity = distanceToDestination < distanceToOrigin ? -1 : 1;
+      Vector2 force = direction * forcePolarity * moveForceMagnitude * Time.deltaTime;
       cardRigidBody.AddForce(force);
+
+      // keep moving until we're close to the destination
+      isMoving = (distanceToDestination > 0.1);
     }
   }
 
@@ -51,9 +72,9 @@ public class Card : MonoBehaviour
     cardSpriteRenderer.sortingOrder = 1;
     // move above the bottom of the view
     cardSize = cardCollider.bounds.size; // TODO fix for rotated cards
-    float moveToX = transform.localPosition.x;
-    float moveToY = cameraMinY + cardSize.y / 2f;
-    StartMovement(new Vector2(moveToX, moveToY));
+    float moveDestinationX = transform.localPosition.x;
+    float moveDestinationY = cameraMinY + cardSize.y / 2f;
+    StartMovement(new Vector2(moveDestinationX, moveDestinationY));
   }
 
   void OnMouseExit()
@@ -62,11 +83,5 @@ public class Card : MonoBehaviour
     StartMovement(positionInFan);
     this.transform.localRotation = rotationInFan;
     cardSpriteRenderer.sortingOrder = 0;
-  }
-
-  void StartMovement(Vector2 destination)
-  {
-    isMoving = true;
-    moveToPosition = destination;
   }
 }
