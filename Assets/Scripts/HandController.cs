@@ -6,7 +6,7 @@ using UnityEngine;
 public class HandController : MonoBehaviour
 {
   public GameObject cardGameObject;
-  public Vector3 fanCenter;
+  public Vector2 fanCenter;
   public float fanRadiusMultiplier;
   public float fanAngleIncrement;
 
@@ -43,19 +43,27 @@ public class HandController : MonoBehaviour
     for (int i = 0; i < numCards; i++)
     {
       float angle = initialAngle + (fanAngleIncrement * i);
-      float depth = (float)(numCards - i) / 10;
-      GameObject card = Instantiate(cardGameObject, CardPositionInFan(angle, depth), CardRotationInFan(angle));
+      int depth = i - numCards;
+      // TODO spawn the cards in some default location
+      // and use Card.StartMovement to move them into the fan
+      GameObject card = Instantiate(cardGameObject,
+        CardPositionInFan(angle), CardRotationInFan(angle));
+      card.GetComponentInChildren<SpriteRenderer>().sortingOrder = depth;
       Card cardScript = card.GetComponent<Card>();
-      cardScript.positionInFan = CardPositionInFan(angle, depth);
+      cardScript.positionInFan = CardPositionInFan(angle);
       cardScript.rotationInFan = CardRotationInFan(angle);
+      cardScript.depthInFan = depth;
+
       cardsInHand.Add(card);
     }
   }
 
-  Vector3 CardPositionInFan(float angleInDegrees, float depth)
+  Vector2 CardPositionInFan(float angleInDegrees)
   {
     float angle = angleInDegrees * Mathf.Deg2Rad;
-    Vector3 cardOffset = new(fanRadius * Mathf.Sin(angle), fanRadius * Mathf.Cos(angle), depth);
+    Vector2 cardOffset = new(
+      fanRadius * Mathf.Sin(angle),
+      fanRadius * Mathf.Cos(angle));
     return fanCenter + cardOffset;
   }
 

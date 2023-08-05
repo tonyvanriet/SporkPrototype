@@ -6,8 +6,10 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-  public Vector3 positionInFan;
+  public Vector2 positionInFan;
   public Quaternion rotationInFan;
+  public int depthInFan;
+
   public float moveForceScalingFactor;
 
   float cameraMinY;
@@ -91,6 +93,6 @@ public class Card : MonoBehaviour
     // get back in your fan!!
     StartMovement(positionInFan);
     this.transform.localRotation = rotationInFan;
-    cardSpriteRenderer.sortingOrder = 0;
+    cardSpriteRenderer.sortingOrder = depthInFan;
   }
 }
