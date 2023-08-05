@@ -6,9 +6,9 @@ using UnityEngine;
 public class HandController : MonoBehaviour
 {
   public GameObject cardGameObject;
-  public Vector3 fanCenter = new(0f, -12f, 0f);
-  public float fanRadiusMultiplier = 3f;
-  public float fanAngleIncrement = 10f;
+  public Vector3 fanCenter;
+  public float fanRadiusMultiplier;
+  public float fanAngleIncrement;
 
   float cardHeight;
   float cardWidth;
@@ -33,8 +33,6 @@ public class HandController : MonoBehaviour
       cardsInHand.Clear();
       DealHand(Random.Range(1, 11));
     }
-
-    // highlight the card on hover˙
   }
 
   void DealHand(int numCards)

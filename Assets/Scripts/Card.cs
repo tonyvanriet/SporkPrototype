@@ -7,9 +7,9 @@ public class Card : MonoBehaviour
 {
   public Vector3 positionInFan;
   public Quaternion rotationInFan;
-  public float moveForceMagnitude = 10000f;
   public bool isMoving = false;
   public Vector2 moveToPosition;
+  public float moveForceMagnitude;
 
   float cameraMinY;
   Vector3 cardSize;
