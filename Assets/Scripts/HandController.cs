@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.AssetImporters;
 using UnityEngine;
 
 public class HandController : MonoBehaviour
@@ -46,6 +47,9 @@ public class HandController : MonoBehaviour
       float angle = initialAngle + (fanAngleIncrement * i);
       float depth = (float)(numCards - i) / 10;
       GameObject card = Instantiate(cardGameObject, CardPositionInFan(angle, depth), CardRotationInFan(angle));
+      Card cardScript = card.GetComponent<Card>();
+      cardScript.positionInFan = CardPositionInFan(angle, depth);
+      cardScript.rotationInFan = CardRotationInFan(angle);
       cardsInHand.Add(card);
     }
   }
