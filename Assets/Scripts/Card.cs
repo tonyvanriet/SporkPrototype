@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
+using Unity.PlasticSCM.Editor.WebApi;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 public class Card : MonoBehaviour
@@ -9,6 +11,7 @@ public class Card : MonoBehaviour
   public Vector2 positionInFan;
   public Quaternion rotationInFan;
   public int depthInFan;
+  public int focusDepth = 1;
 
   public float moveForceScalingFactor;
   public float moveLerpTime;
@@ -27,17 +30,19 @@ public class Card : MonoBehaviour
   bool isMoving = false;
   Vector2 moveOrigin;
   Vector2 moveDestination;
+  int moveDepth;
   float distanceToDestination;
   Vector2 moveSmoothDampCurrentVelocity = Vector2.zero;
 
   // tell the card to start a movement towards the destination
   // so far the only thing telling the card to move is itself
   // but I'm expecting that the change
-  public void StartMovement(Vector2 destination)
+  public void StartMovement(Vector2 destination, int depth)
   {
     isMoving = true;
     moveOrigin = transform.localPosition;
     moveDestination = destination;
+    moveDepth = depth;
   }
 
   // stop moving and explicitly set the position to the destination
@@ -45,6 +50,7 @@ public class Card : MonoBehaviour
   {
     isMoving = false;
     transform.localPosition = moveDestination;
+    SetDepth(moveDepth);
   }
 
   void Start()
@@ -59,7 +65,7 @@ public class Card : MonoBehaviour
     cardRigidBody = GetComponent<Rigidbody2D>();
     cardSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
-    cardSpriteRenderer.sortingOrder = depthInFan;
+    cardSize = transform.localScale;
   }
 
   void Update()
@@ -68,6 +74,7 @@ public class Card : MonoBehaviour
     {
       distanceToDestination =
         Vector2.Distance(moveDestination, transform.localPosition);
+      SetDepth(moveDepth);
 
       switch (moveUsing)
       {
@@ -86,22 +93,21 @@ public class Card : MonoBehaviour
   void OnMouseEnter()
   {
     // rotate to level
+    // TODO make rotation part of card movement
     this.transform.localRotation = Quaternion.identity;
-    // bring the card to the front
-    cardSpriteRenderer.sortingOrder = 1;
-    // move above the bottom of the view
-    cardSize = cardCollider.bounds.size; // TODO fix for rotated cards
+    // start a movement above the bottom of the view
+    // and bring to front
     float moveDestinationX = transform.localPosition.x;
     float moveDestinationY = cameraMinY + cardSize.y / 2f;
-    StartMovement(new Vector2(moveDestinationX, moveDestinationY));
+    StartMovement(
+      new Vector2(moveDestinationX, moveDestinationY), focusDepth);
   }
 
   void OnMouseExit()
   {
     // get back in your fan!!
-    StartMovement(positionInFan);
+    StartMovement(positionInFan, depthInFan);
     this.transform.localRotation = rotationInFan;
-    cardSpriteRenderer.sortingOrder = depthInFan;
   }
 
   void MoveWithForce()
@@ -114,6 +120,7 @@ public class Card : MonoBehaviour
       distanceToDestination * moveForceScalingFactor * Time.deltaTime;
     Vector2 force = direction * forceMagnitude;
     cardRigidBody.AddForce(force);
+    SetDepth(moveDepth);
   }
 
   void MoveWithLerp()
@@ -122,6 +129,7 @@ public class Card : MonoBehaviour
       transform.position,
       moveDestination,
       moveLerpTime);
+    SetDepth(moveDepth);
   }
 
   void MoveWithSmoothDamp()
@@ -131,5 +139,16 @@ public class Card : MonoBehaviour
       moveDestination,
       ref moveSmoothDampCurrentVelocity,
       moveSmoothTime);
+    SetDepth(moveDepth);
+  }
+
+  // set sortingOrder and transform.z to the given depth
+  // larger value is closer to the camera
+  void SetDepth(int depth)
+  {
+    cardSpriteRenderer.sortingOrder = depth;
+    Vector3 currentPosition = transform.localPosition;
+    currentPosition.z = (float)depth / -10;
+    transform.localPosition = currentPosition;
   }
 }
