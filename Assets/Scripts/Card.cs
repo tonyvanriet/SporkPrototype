@@ -56,6 +56,8 @@ public class Card : MonoBehaviour
     cardCollider = GetComponent<Collider2D>();
     cardRigidBody = GetComponent<Rigidbody2D>();
     cardSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+    cardSpriteRenderer.sortingOrder = depthInFan;
   }
 
   void Update()

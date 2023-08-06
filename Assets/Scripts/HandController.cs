@@ -6,6 +6,7 @@ using UnityEngine;
 public class HandController : MonoBehaviour
 {
   public GameObject cardGameObject;
+  public Vector2 cardSpawnLocation = new Vector2(0f, 8f);
   public Vector2 fanCenter;
   public float fanRadiusMultiplier;
   public float fanAngleIncrement;
@@ -37,22 +38,23 @@ public class HandController : MonoBehaviour
 
   void DealHand(int numCards)
   {
-    float totalAngle = fanAngleIncrement * (numCards - 1);
-    float initialAngle = -totalAngle / 2;
+    float fanTotalAngle = fanAngleIncrement * (numCards - 1);
+    float fanInitialAngle = -fanTotalAngle / 2;
 
     for (int i = 0; i < numCards; i++)
     {
-      float angle = initialAngle + (fanAngleIncrement * i);
+      float angle = fanInitialAngle + (fanAngleIncrement * i);
       int depth = i - numCards;
       // TODO spawn the cards in some default location
       // and use Card.StartMovement to move them into the fan
       GameObject card = Instantiate(cardGameObject,
-        CardPositionInFan(angle), CardRotationInFan(angle));
-      card.GetComponentInChildren<SpriteRenderer>().sortingOrder = depth;
+        cardSpawnLocation, CardRotationInFan(angle));
+
       Card cardScript = card.GetComponent<Card>();
       cardScript.positionInFan = CardPositionInFan(angle);
       cardScript.rotationInFan = CardRotationInFan(angle);
       cardScript.depthInFan = depth;
+      cardScript.StartMovement(CardPositionInFan(angle));
 
       cardsInHand.Add(card);
     }
