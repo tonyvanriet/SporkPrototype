@@ -11,10 +11,11 @@ public class Card : MonoBehaviour
   public int depthInFan;
 
   public float moveForceScalingFactor;
-  public float moveLerpTime = 0.3f;
-  public float moveSmoothTime = 0.3f;
+  public float moveLerpTime;
+  public float moveSmoothTime;
   public enum MoveMethod { Force, Lerp, SmoothDamp }
-  public MoveMethod moveUsing = MoveMethod.Lerp;
+  public MoveMethod moveUsing;
+  public float landingDistance;
 
   float cameraMinY;
   Vector3 cardSize;
@@ -26,6 +27,7 @@ public class Card : MonoBehaviour
   bool isMoving = false;
   Vector2 moveOrigin;
   Vector2 moveDestination;
+  float distanceToDestination;
   Vector2 moveSmoothDampCurrentVelocity = Vector2.zero;
 
   // tell the card to start a movement towards the destination
@@ -63,12 +65,22 @@ public class Card : MonoBehaviour
   void Update()
   {
     if (isMoving)
+    {
+      distanceToDestination =
+        Vector2.Distance(moveDestination, transform.localPosition);
+
       switch (moveUsing)
       {
         case MoveMethod.Force: MoveWithForce(); break;
         case MoveMethod.Lerp: MoveWithLerp(); break;
         case MoveMethod.SmoothDamp: MoveWithSmoothDamp(); break;
       }
+
+      // keep moving until we're slowly approaching the dest
+      bool landing = (distanceToDestination < landingDistance
+        && cardRigidBody.velocity.magnitude < landingDistance);
+      if (landing) CompleteMovement();
+    }
   }
 
   void OnMouseEnter()
@@ -98,17 +110,10 @@ public class Card : MonoBehaviour
     // with a force that's proportional to the distance
     Vector2 currentPosition = this.transform.localPosition;
     Vector2 direction = (moveDestination - currentPosition).normalized;
-    float distanceToDestination =
-      Vector2.Distance(moveDestination, transform.localPosition);
     float forceMagnitude =
       distanceToDestination * moveForceScalingFactor * Time.deltaTime;
     Vector2 force = direction * forceMagnitude;
     cardRigidBody.AddForce(force);
-
-    // keep moving until we're slowly approaching the dest
-    bool landing = (distanceToDestination < 0.01
-      && cardRigidBody.velocity.magnitude < 0.01);
-    if (landing) CompleteMovement();
   }
 
   void MoveWithLerp()

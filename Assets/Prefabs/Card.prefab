@@ -96,9 +96,10 @@ MonoBehaviour:
   rotationInFan: {x: 0, y: 0, z: 0, w: 0}
   depthInFan: 0
   moveForceScalingFactor: 15000
-  moveLerpTime: 0.025
-  moveSmoothTime: 0.05
-  moveUsing: 0
+  moveLerpTime: 0.08
+  moveSmoothTime: 0.06
+  moveUsing: 2
+  landingDistance: 0.05
 --- !u!50 &1017074990703781405
 Rigidbody2D:
   serializedVersion: 4
