@@ -92,9 +92,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60106e0f5bcee4248acdf73ef91425c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  positionInFan: {x: 0, y: 0, z: 0}
+  positionInFan: {x: 0, y: 0}
   rotationInFan: {x: 0, y: 0, z: 0, w: 0}
+  depthInFan: 0
   moveForceScalingFactor: 100000
+  moveLerpTime: 0.025
+  moveSmoothTime: 0.05
+  moveUsing: 2
 --- !u!50 &1017074990703781405
 Rigidbody2D:
   serializedVersion: 4

@@ -11,6 +11,10 @@ public class Card : MonoBehaviour
   public int depthInFan;
 
   public float moveForceScalingFactor;
+  public float moveLerpTime = 0.3f;
+  public float moveSmoothTime = 0.3f;
+  public enum MoveMethod { Force, Lerp, SmoothDamp }
+  public MoveMethod moveUsing = MoveMethod.Lerp;
 
   float cameraMinY;
   Vector3 cardSize;
@@ -22,6 +26,7 @@ public class Card : MonoBehaviour
   bool isMoving = false;
   Vector2 moveOrigin;
   Vector2 moveDestination;
+  Vector2 moveSmoothDampCurrentVelocity = Vector2.zero;
 
   // tell the card to start a movement towards the destination
   // so far the only thing telling the card to move is itself
@@ -56,23 +61,12 @@ public class Card : MonoBehaviour
   void Update()
   {
     if (isMoving)
-    {
-      // push the card towards the destination
-      // with a force that's proportional to the distance
-      Vector2 currentPosition = this.transform.localPosition;
-      Vector2 direction = (moveDestination - currentPosition).normalized;
-      float distanceToDestination =
-        Vector2.Distance(moveDestination, transform.localPosition);
-      float forceMagnitude =
-        distanceToDestination * moveForceScalingFactor * Time.deltaTime;
-      Vector2 force = direction * forceMagnitude;
-      cardRigidBody.AddForce(force);
-
-      // keep moving until we're slowly approaching the dest
-      bool landing = (distanceToDestination < 0.01
-        && cardRigidBody.velocity.magnitude < 0.01);
-      if (landing) CompleteMovement();
-    }
+      switch (moveUsing)
+      {
+        case MoveMethod.Force: MoveWithForce(); break;
+        case MoveMethod.Lerp: MoveWithLerp(); break;
+        case MoveMethod.SmoothDamp: MoveWithSmoothDamp(); break;
+      }
   }
 
   void OnMouseEnter()
@@ -94,5 +88,41 @@ public class Card : MonoBehaviour
     StartMovement(positionInFan);
     this.transform.localRotation = rotationInFan;
     cardSpriteRenderer.sortingOrder = depthInFan;
+  }
+
+  void MoveWithForce()
+  {
+    // push the card towards the destination
+    // with a force that's proportional to the distance
+    Vector2 currentPosition = this.transform.localPosition;
+    Vector2 direction = (moveDestination - currentPosition).normalized;
+    float distanceToDestination =
+      Vector2.Distance(moveDestination, transform.localPosition);
+    float forceMagnitude =
+      distanceToDestination * moveForceScalingFactor * Time.deltaTime;
+    Vector2 force = direction * forceMagnitude;
+    cardRigidBody.AddForce(force);
+
+    // keep moving until we're slowly approaching the dest
+    bool landing = (distanceToDestination < 0.01
+      && cardRigidBody.velocity.magnitude < 0.01);
+    if (landing) CompleteMovement();
+  }
+
+  void MoveWithLerp()
+  {
+    transform.position = Vector2.Lerp(
+      transform.position,
+      moveDestination,
+      moveLerpTime);
+  }
+
+  void MoveWithSmoothDamp()
+  {
+    transform.position = Vector2.SmoothDamp(
+      transform.position,
+      moveDestination,
+      ref moveSmoothDampCurrentVelocity,
+      moveSmoothTime);
   }
 }
