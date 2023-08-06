@@ -45,8 +45,7 @@ public class HandController : MonoBehaviour
     {
       float angle = fanInitialAngle + (fanAngleIncrement * i);
       int depth = i - numCards;
-      // TODO spawn the cards in some default location
-      // and use Card.StartMovement to move them into the fan
+
       GameObject card = Instantiate(cardGameObject,
         cardSpawnLocation, CardRotationInFan(angle));
 
