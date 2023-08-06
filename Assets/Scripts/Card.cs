@@ -12,6 +12,7 @@ public class Card : MonoBehaviour
   public Quaternion rotationInFan;
   public int depthInFan;
   public int focusDepth = 1;
+  public int dragDepth = 2;
 
   public float moveForceScalingFactor;
   public float moveLerpTime;
@@ -33,6 +34,10 @@ public class Card : MonoBehaviour
   int moveDepth;
   float distanceToDestination;
   Vector2 moveSmoothDampCurrentVelocity = Vector2.zero;
+
+  // dragging
+  bool isDragging = false;
+  Vector2 mouseClickOffset;
 
   // tell the card to start a movement towards the destination
   // so far the only thing telling the card to move is itself
@@ -70,6 +75,17 @@ public class Card : MonoBehaviour
 
   void Update()
   {
+
+    if (isDragging)
+    {
+      // update the position of the card to follow the mouse
+      // and include the original offset of the mouse click
+      Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+      Vector2 draggedPosition = mousePosition + mouseClickOffset;
+      transform.position = draggedPosition;
+      SetDepth(dragDepth);
+    }
+
     if (isMoving)
     {
       distanceToDestination =
@@ -108,6 +124,19 @@ public class Card : MonoBehaviour
     // get back in your fan!!
     StartMovement(positionInFan, depthInFan);
     this.transform.localRotation = rotationInFan;
+  }
+
+  void OnMouseDown()
+  {
+    if (Input.GetMouseButton(0))
+    {
+      // Calculate the offset between the click location
+      // and the card's position
+      Vector2 mousePosition =
+        Camera.main.ScreenToWorldPoint(Input.mousePosition);
+      mouseClickOffset = (Vector2)transform.position - mousePosition;
+      isDragging = true;
+    }
   }
 
   void MoveWithForce()
