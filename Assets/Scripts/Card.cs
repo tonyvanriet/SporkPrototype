@@ -12,7 +12,7 @@ public class Card : MonoBehaviour
   public Quaternion rotationInFan;
   public int depthInFan;
   public int focusDepth = 1;
-  public int dragDepth = 2;
+  public int holdDepth = 2;
 
   public float moveForceScalingFactor;
   public float moveLerpTime;
@@ -20,6 +20,9 @@ public class Card : MonoBehaviour
   public enum MoveMethod { Force, Lerp, SmoothDamp }
   public MoveMethod moveUsing;
   public float landingDistance;
+
+  public enum HoldPosition { Initial, Center }
+  public HoldPosition holdPosition = HoldPosition.Initial;
 
   float cameraMinY;
   Vector3 cardSize;
@@ -35,9 +38,9 @@ public class Card : MonoBehaviour
   float distanceToDestination;
   Vector2 moveSmoothDampCurrentVelocity = Vector2.zero;
 
-  // dragging
-  bool isDragging = false;
-  Vector2 mouseClickOffset;
+  // holding
+  bool isHolding = false;
+  Vector2 holdOffset;
 
   // tell the card to start a movement towards the destination
   // so far the only thing telling the card to move is itself
@@ -76,14 +79,15 @@ public class Card : MonoBehaviour
   void Update()
   {
 
-    if (isDragging)
+    if (isHolding)
     {
       // update the position of the card to follow the mouse
       // and include the original offset of the mouse click
-      Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-      Vector2 draggedPosition = mousePosition + mouseClickOffset;
-      transform.position = draggedPosition;
-      SetDepth(dragDepth);
+      Vector2 mousePosition =
+        Camera.main.ScreenToWorldPoint(Input.mousePosition);
+      Vector2 heldPosition = mousePosition + holdOffset;
+      transform.position = heldPosition;
+      SetDepth(holdDepth);
     }
 
     if (isMoving)
@@ -134,9 +138,31 @@ public class Card : MonoBehaviour
       // and the card's position
       Vector2 mousePosition =
         Camera.main.ScreenToWorldPoint(Input.mousePosition);
-      mouseClickOffset = (Vector2)transform.position - mousePosition;
-      isDragging = true;
+
+      switch (holdPosition)
+      {
+        case HoldPosition.Initial:
+          holdOffset = (Vector2)transform.position - mousePosition;
+          break;
+        case HoldPosition.Center:
+          holdOffset = Vector2.zero;
+          break;
+        default:
+          holdOffset = Vector2.zero;
+          break;
+      }
+
+      isHolding = true;
+      isMoving = false;
     }
+  }
+
+  private void OnMouseUp()
+  {
+    isHolding = false;
+    // get back in your fan!!
+    StartMovement(positionInFan, depthInFan);
+    this.transform.localRotation = rotationInFan;
   }
 
   void MoveWithForce()
