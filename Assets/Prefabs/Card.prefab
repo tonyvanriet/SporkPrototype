@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1017074990703781405}
   m_Layer: 0
   m_Name: Card
-  m_TagString: Untagged
+  m_TagString: Card
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -96,7 +96,7 @@ MonoBehaviour:
   rotationInFan: {x: 0, y: 0, z: 0, w: 0}
   depthInFan: 0
   focusDepth: 1
-  dragDepth: 2
+  holdDepth: 2
   moveForceScalingFactor: 15000
   moveLerpTime: 0.08
   moveSmoothTime: 0.06

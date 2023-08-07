@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
@@ -38,6 +39,7 @@ public class Card : MonoBehaviour
   // holding
   bool isHolding = false;
   Vector2 holdOffset;
+  GameObject heldOverObject;
 
   // tell the card to start a movement towards the destination
   // so far the only thing telling the card to move is itself
@@ -154,12 +156,30 @@ public class Card : MonoBehaviour
     }
   }
 
-  private void OnMouseUp()
+  void OnMouseUp()
   {
     isHolding = false;
-    // get back in your fan!!
-    StartMovement(positionInFan, depthInFan);
-    this.transform.localRotation = rotationInFan;
+    if (heldOverObject && heldOverObject.CompareTag("Enemy"))
+    {
+      Destroy(gameObject, 0.1f);
+    }
+    else
+    {
+      // get back in your fan!!
+      StartMovement(positionInFan, depthInFan);
+      this.transform.localRotation = rotationInFan;
+    }
+  }
+
+  void OnTriggerEnter2D(Collider2D other)
+  {
+    if (isHolding)
+      heldOverObject = other.gameObject;
+  }
+
+  void OnTriggerExit2D(Collider2D other)
+  {
+    heldOverObject = null;
   }
 
   void MoveWithForce()
