@@ -15,18 +15,20 @@ public class HandController : MonoBehaviour
   float fanRadius;
   readonly List<GameObject> cardsInHand = new List<GameObject>();
 
-  void Update()
+  void Start()
   {
-    // wasteful to compute these each update
-    // but for now I want to see live updates as I tune the constants in the editor
     cardHeight = cardGameObject.transform.localScale.y;
     cardWidth = cardGameObject.transform.localScale.x;
     fanRadius = cardHeight * fanRadiusMultiplier;
-
     // might want to set a fixed pitch between the corners of the cards
     // then use that pitch, card width, and fan radius to determine the angle
     // for now, just use a fixed fan angle increment
 
+    DealHand(7);
+  }
+
+  void Update()
+  {
     if (Input.GetKeyDown(KeyCode.Space))
     {
       cardsInHand.ForEach(card => Destroy(card));
