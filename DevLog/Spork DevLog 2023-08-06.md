@@ -48,7 +48,7 @@ An obvious example of a starting point would be:
 Of course there will be a lot more fundamental mechanics needed in the early iterations and there won’t be much to do in terms of tuning game design elements until there are more available. But it might be a good idea to still go through the motions of this cycle to make sure I stay connected to the higher level game design rather than just churning through implementation of game mechanics that I think I might want.
 
 ## Playing an attack card
-Let's start with dragging a card onto an enemy to play that card. 
+Let's start with dragging a card onto an enemy to play that card.
 
 Dragging is easy enough.
 ``` cs

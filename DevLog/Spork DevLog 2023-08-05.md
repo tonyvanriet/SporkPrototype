@@ -1,5 +1,5 @@
 # # Spork DevLog 2023-08-05
-#spork
+#spork #devlog
 
 ## Card Motion
 
@@ -51,7 +51,7 @@ Now on hover the card is setting its desired `moveToPosition` instead of immedia
       // find the direction to the moveToPosition
       Vector2 currentPosition = this.transform.localPosition;
       Vector2 direction = (moveToPosition - currentPosition).normalized;
-      // push the card	
+      // push the card
       Vector2 force = direction * moveForceMagnitude * Time.deltaTime;
       cardRigidBody.AddForce(force);
     }
@@ -111,7 +111,7 @@ Let's get back to applying an opposite force after the halfway point of the move
       float distanceToOrigin =
         Vector2.Distance(moveOrigin, transform.localPosition);
       int forcePolarity = distanceToDestination < distanceToOrigin ? -1 : 1;
-      Vector2 force = 
+      Vector2 force =
         direction * forcePolarity * moveForceMagnitude * Time.deltaTime;
       cardRigidBody.AddForce(force);
 
@@ -157,7 +157,7 @@ It's just not working out. Relying on pushing backwards to slow down makes it to
 
 ![](Spork%20DevLog%202023-08-05/CleanShot%202023-08-05%20at%2014.56.11.gif)
 
-That's actually looking pretty decent. Seems like a delicate balance of the force scaling factor and the drag. Tinkering with the mass doesn't seem to effect the behavior any differently. It's as if `F = ma`. 
+That's actually looking pretty decent. Seems like a delicate balance of the force scaling factor and the drag. Tinkering with the mass doesn't seem to effect the behavior any differently. It's as if `F = ma`.
 
 The cards aren't returning to the correct depth because my movement code is throwing away the original z value. I ended up changing any remaining Vector3 position variables to Vector2 and I'm using the `SpriteRenderer.sortingOrder` exclusively for depth. The depths in the fan are a sequence of negative numbers and it's set to 1 on hover.
 
@@ -206,7 +206,7 @@ Word on the street is that you wanna use `Rigidbody2D.AddForce` or transform the
   }
 ```
 
-Well, Lerp and SmoothDamp win on ease of implementation but they sure are boring. Unity's having all the fun. 
+Well, Lerp and SmoothDamp win on ease of implementation but they sure are boring. Unity's having all the fun.
 
 ![](Spork%20DevLog%202023-08-05/CleanShot%202023-08-05%20at%2019.06.42%202.gif)
 

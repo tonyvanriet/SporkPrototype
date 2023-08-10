@@ -1,5 +1,5 @@
 # Spork DevLog 2023-08-03
-#spork
+#spork #devlog
 
 ## VS Code Please
 Got VSCode Intellisense and debugging setup thanks to this [video](https://www.youtube.com/watch?v=3GVGyooZ8jk). No more bloated Visual Studio for Mac.
