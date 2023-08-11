@@ -1,7 +1,7 @@
 # Spork DevLog 2023-08-10
 #spork #devlog
 
-From the last session, the current meta goal is to implement whatever gameplay mechanics are needed to support the game design element of [playing an attack card](Spork%20DevLog%202023-08-06.md/playing-an-attack-card). We can already drag a card around and when it's dropped on the enemy, the card despawns. Now to actually carry out the attack on the enemy.
+From the last session, the current meta goal is to implement whatever gameplay mechanics are needed to support the game design element of [playing an attack card](Spork%20DevLog%202023-08-06.md#playing-an-attack-card). We can already drag a card around and when it's dropped on the enemy, the card despawns. Now to actually carry out the attack on the enemy.
 ## Attacking the enemy
 I’ve spent some time trying to put a health bar on the enemy and it hasn't worked out. I started by adding 2D sprites for the health bar border and the red fill. Then when I hooked  the health value up to the Y scale of the fill, I realized that that would cause the fill to change size relative to the center of the health bar (not pictured here). Not what I want, and the idea of coordinating the X position and the Y scale to have a left justified health bar did not sound like a good time.
 
