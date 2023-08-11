@@ -17,8 +17,17 @@ public class EnemyShip : MonoBehaviour
     healthBar.SetHealth(currentHealth);
   }
 
+  public void ReceiveAttack(int damage)
+  {
+    currentHealth -= damage;
+  }
+
   void Update()
   {
     healthBar.SetHealth(currentHealth);
+    if (currentHealth <= 0)
+    {
+      Destroy(gameObject, 0.1f);
+    }
   }
 }

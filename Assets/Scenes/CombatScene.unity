@@ -498,6 +498,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2332897730784901253, guid: 26c782b073ab8479a81b5e5f7bd3ca46, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2332897730784901253, guid: 26c782b073ab8479a81b5e5f7bd3ca46, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7523221561622316693, guid: 26c782b073ab8479a81b5e5f7bd3ca46, type: 3}
       propertyPath: m_Name
       value: EnemyShip

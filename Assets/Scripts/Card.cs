@@ -161,6 +161,11 @@ public class Card : MonoBehaviour
     isHolding = false;
     if (heldOverObject && heldOverObject.CompareTag("Enemy"))
     {
+      // attack the enemy
+      EnemyShip enemy = heldOverObject.GetComponent<EnemyShip>();
+      enemy.ReceiveAttack(8);
+
+      // despawn the card
       Destroy(gameObject, 0.1f);
     }
     else
