@@ -6,20 +6,19 @@ using UnityEngine.UI;
 
 public class EnemyShip : MonoBehaviour
 {
-  public UnityEngine.UI.Image healthFillImage;
   public int maxHealth = 50;
-  public int health = 50;
+  public int currentHealth;
+  public HealthBar healthBar;
 
-  // Start is called before the first frame update
   void Start()
   {
-
+    currentHealth = maxHealth;
+    healthBar.SetMaxHealth(maxHealth);
+    healthBar.SetHealth(currentHealth);
   }
 
-  // Update is called once per frame
   void Update()
   {
-    float healthPercentage = (float)health / maxHealth;
-    healthFillImage.fillAmount = healthPercentage;
+    healthBar.SetHealth(currentHealth);
   }
 }
