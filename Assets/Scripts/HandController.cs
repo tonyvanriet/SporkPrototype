@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HandController : MonoBehaviour
 {
+  public HeroShip heroShip;
   public GameObject cardGameObject;
   public Vector2 cardSpawnLocation = new Vector2(0f, 8f);
   public Vector2 fanCenter;
@@ -43,6 +44,7 @@ public class HandController : MonoBehaviour
     {
       cardsInHand.ForEach(card => Destroy(card));
       cardsInHand.Clear();
+      heroShip.ReceiveAttack(12);
       DealHand(Random.Range(1, 11));
     }
   }
