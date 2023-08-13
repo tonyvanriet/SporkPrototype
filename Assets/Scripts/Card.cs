@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
+  public HandController handControllerScript;
   public Vector2 positionInFan;
   public Quaternion rotationInFan;
   public int depthInFan;
@@ -91,10 +92,6 @@ public class Card : MonoBehaviour
 
     if (isMoving)
     {
-      distanceToDestination =
-        Vector2.Distance(moveDestination, transform.localPosition);
-      SetDepth(moveDepth);
-
       switch (moveUsing)
       {
         case MoveMethod.Force: MoveWithForce(); break;
@@ -102,7 +99,13 @@ public class Card : MonoBehaviour
         case MoveMethod.SmoothDamp: MoveWithSmoothDamp(); break;
       }
 
+      // set depth and rotation
+      SetDepth(moveDepth);
+      this.transform.localRotation = rotationInFan;
+
       // keep moving until we're slowly approaching the dest
+      distanceToDestination =
+        Vector2.Distance(moveDestination, transform.localPosition);
       bool landing = (distanceToDestination < landingDistance
         && cardRigidBody.velocity.magnitude < landingDistance);
       if (landing) CompleteMovement();
@@ -165,8 +168,8 @@ public class Card : MonoBehaviour
       EnemyShip enemy = heldOverObject.GetComponent<EnemyShip>();
       enemy.ReceiveAttack(8);
 
-      // despawn the card
-      Destroy(gameObject, 0.1f);
+      // play the card out of the hand
+      handControllerScript.PlayCard(gameObject);
     }
     else
     {

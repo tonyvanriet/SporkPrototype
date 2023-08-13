@@ -15,6 +15,16 @@ public class HandController : MonoBehaviour
   float fanRadius;
   readonly List<GameObject> cardsInHand = new List<GameObject>();
 
+  public void PlayCard(GameObject card)
+  {
+    // get rid of the card
+    cardsInHand.Remove(card);
+    Destroy(card, 0.1f);
+
+    // reposition the hand
+    FanCards();
+  }
+
   void Start()
   {
     cardHeight = cardGameObject.transform.localScale.y;
@@ -44,19 +54,31 @@ public class HandController : MonoBehaviour
 
     for (int i = 0; i < numCards; i++)
     {
+      GameObject card = Instantiate(cardGameObject,
+        cardSpawnLocation, Quaternion.identity);
+      cardsInHand.Add(card);
+      card.GetComponent<Card>().handControllerScript = this;
+    }
+    FanCards();
+  }
+
+  void FanCards()
+  {
+    int numCards = cardsInHand.Count;
+
+    float fanTotalAngle = fanAngleIncrement * (numCards - 1);
+    float fanInitialAngle = -fanTotalAngle / 2;
+
+    for (int i = 0; i < numCards; i++)
+    {
       float angle = fanInitialAngle + (fanAngleIncrement * i);
       int depth = i - numCards;
 
-      GameObject card = Instantiate(cardGameObject,
-        cardSpawnLocation, CardRotationInFan(angle));
-
-      Card cardScript = card.GetComponent<Card>();
+      Card cardScript = cardsInHand[i].GetComponent<Card>();
       cardScript.positionInFan = CardPositionInFan(angle);
       cardScript.rotationInFan = CardRotationInFan(angle);
       cardScript.depthInFan = depth;
       cardScript.StartMovement(CardPositionInFan(angle), depth);
-
-      cardsInHand.Add(card);
     }
   }
 
