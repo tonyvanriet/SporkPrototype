@@ -57,7 +57,7 @@ public class HandController : MonoBehaviour
     for (int i = 0; i < numCards; i++)
     {
       GameObject card = Instantiate(cardGameObject,
-        cardSpawnLocation, Quaternion.identity);
+        cardSpawnLocation, Quaternion.identity, transform);
       cardsInHand.Add(card);
       card.GetComponent<Card>().handControllerScript = this;
     }
