@@ -80,7 +80,10 @@ public class HandController : MonoBehaviour
       cardScript.positionInFan = CardPositionInFan(angle);
       cardScript.rotationInFan = CardRotationInFan(angle);
       cardScript.depthInFan = depth;
-      cardScript.StartMovement(CardPositionInFan(angle), depth);
+      cardScript.StartMovement(
+        CardPositionInFan(angle),
+        depth,
+        CardRotationInFan(angle));
     }
   }
 

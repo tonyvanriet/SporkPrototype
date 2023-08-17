@@ -34,6 +34,7 @@ public class Card : MonoBehaviour
   Vector2 moveOrigin;
   Vector2 moveDestination;
   int moveDepth;
+  Quaternion moveRotation;
   float distanceToDestination;
   Vector2 moveSmoothDampCurrentVelocity = Vector2.zero;
 
@@ -45,12 +46,13 @@ public class Card : MonoBehaviour
   // tell the card to start a movement towards the destination
   // so far the only thing telling the card to move is itself
   // but I'm expecting that the change
-  public void StartMovement(Vector2 destination, int depth)
+  public void StartMovement(Vector2 destination, int depth, Quaternion rotation)
   {
     isMoving = true;
     moveOrigin = transform.localPosition;
     moveDestination = destination;
     moveDepth = depth;
+    moveRotation = rotation;
   }
 
   // stop moving and explicitly set the position to the destination
@@ -59,6 +61,7 @@ public class Card : MonoBehaviour
     isMoving = false;
     transform.localPosition = moveDestination;
     SetDepth(moveDepth);
+    transform.localRotation = moveRotation;
   }
 
   void Start()
@@ -88,9 +91,9 @@ public class Card : MonoBehaviour
       Vector2 heldPosition = mousePosition + holdOffset;
       transform.position = heldPosition;
       SetDepth(holdDepth);
+      this.transform.localRotation = Quaternion.identity;
     }
-
-    if (isMoving)
+    else if (isMoving)
     {
       switch (moveUsing)
       {
@@ -99,9 +102,12 @@ public class Card : MonoBehaviour
         case MoveMethod.SmoothDamp: MoveWithSmoothDamp(); break;
       }
 
-      // set depth and rotation
+      // set rotation
+      // TODO rotate gradually throughout the movement
+      this.transform.localRotation = moveRotation;
+
+      // set depth
       SetDepth(moveDepth);
-      this.transform.localRotation = rotationInFan;
 
       // keep moving until we're slowly approaching the dest
       distanceToDestination =
@@ -114,22 +120,20 @@ public class Card : MonoBehaviour
 
   void OnMouseEnter()
   {
-    // rotate to level
-    // TODO make rotation part of card movement
-    this.transform.localRotation = Quaternion.identity;
     // start a movement above the bottom of the view
     // and bring to front
     float moveDestinationX = transform.localPosition.x;
     float moveDestinationY = cameraMinY + cardSize.y / 2f;
     StartMovement(
-      new Vector2(moveDestinationX, moveDestinationY), focusDepth);
+      new Vector2(moveDestinationX, moveDestinationY),
+      focusDepth,
+      Quaternion.identity);
   }
 
   void OnMouseExit()
   {
     // get back in your fan!!
-    StartMovement(positionInFan, depthInFan);
-    this.transform.localRotation = rotationInFan;
+    StartMovement(positionInFan, depthInFan, rotationInFan);
   }
 
   void OnMouseDown()
@@ -174,8 +178,7 @@ public class Card : MonoBehaviour
     else
     {
       // get back in your fan!!
-      StartMovement(positionInFan, depthInFan);
-      this.transform.localRotation = rotationInFan;
+      StartMovement(positionInFan, depthInFan, rotationInFan);
     }
   }
 
