@@ -4,4 +4,4 @@ Prototyping a deckbuilder in space!
 
 Slay the Spire meets FTL.
 
-![](DevLog/Spork%20DevLog%202023-08-06/CleanShot%202023-08-06%20at%2023.54.35.gif)
+![](DevLog/Spork%20DevLog%202023-08-12/CleanShot%202023-08-13%20at%2008.53.50%202.gif)
