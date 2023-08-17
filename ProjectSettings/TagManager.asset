@@ -47,6 +47,9 @@ TagManager:
   - name: Ships
     uniqueID: 82019183
     locked: 0
+  - name: UI
+    uniqueID: 2223972175
+    locked: 0
   - name: Cards
     uniqueID: 2801884759
     locked: 0
